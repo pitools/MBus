@@ -1,0 +1,94 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:MBLite.ViewModels"
+             xmlns:vmc="clr-namespace:MBLite.ViewModels.Connection"
+			 xmlns:views="clr-namespace:MBLite.Views"
+ 			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System.ObjectModel"
+			 
+             mc:Ignorable="d" d:DesignWidth="256" d:DesignHeight="256"
+
+			 x:Class="MBLite.Views.ConnectionView"
+             x:CompileBindings="True" x:DataType="vm:MainViewModel">
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext
+		 property in code (look at App.axaml.cs) -->
+		<vm:MainViewModel>
+			<vm:MainViewModel.Connection>
+				<vmc:ConnectionViewModel>
+					<vmc:ConnectionViewModel.Id>
+						1
+					</vmc:ConnectionViewModel.Id>
+					<vmc:ConnectionViewModel.ComPorts>
+						<objectModel:ObservableCollection x:TypeArguments="sys:String">
+							<sys:String>COM1</sys:String>
+							<sys:String>COM2</sys:String>
+							<sys:String>COM3</sys:String>
+							<sys:String>COM4</sys:String>
+						</objectModel:ObservableCollection>
+					</vmc:ConnectionViewModel.ComPorts>
+					<vmc:ConnectionViewModel.SelectedPort>COM1</vmc:ConnectionViewModel.SelectedPort>
+				</vmc:ConnectionViewModel>
+			</vm:MainViewModel.Connection>
+		</vm:MainViewModel>
+	</Design.DataContext>
+
+	<Grid ShowGridLines="False">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition MinWidth="64"></ColumnDefinition>
+			<ColumnDefinition MinWidth="96"></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+		</Grid.RowDefinitions>
+
+		<TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">Connection settings:</TextBlock>
+		<Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">
+			Port
+			<ToolTip.Tip>
+				<StackPanel>
+					<TextBlock>Serial port number</TextBlock>
+				</StackPanel>
+			</ToolTip.Tip>
+		</Label>
+		<ComboBox x:Name="ComPortsComboBox" Grid.Row="1" Grid.Column="1"
+				  ItemsSource="{Binding Connection.ComPorts}"
+				  SelectedIndex="1" MaxDropDownHeight="256" SelectedItem="{Binding Connection.SelectedPort}"
+				  VerticalAlignment="Center" HorizontalAlignment="Stretch">
+		</ComboBox>
+		<Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Id</Label>
+		<TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Watermark="Id"
+				 Text="{Binding Path=Connection.Id}" />
+
+		<Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Baudrate</Label>
+		<ComboBox Grid.Row="3" Grid.Column="1" SelectedIndex="0" MaxDropDownHeight="128" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+			<ComboBoxItem ToolTip.Tip="boy, this is really fast...">1200</ComboBoxItem>
+			<ComboBoxItem ToolTip.Tip="the speed modem that every machine came with after 9600 was available...">2400</ComboBoxItem>
+			<ComboBoxItem ToolTip.Tip="at last, fast enough!">9600</ComboBoxItem>
+			<ComboBoxItem ToolTip.Tip="but then came...">14400</ComboBoxItem>
+			<ComboBoxItem ToolTip.Tip="2 x 9 600">19200</ComboBoxItem>
+			<ComboBoxItem ToolTip.Tip="fastest base signal rate on a phone line">28800</ComboBoxItem>
+			<ComboBoxItem ToolTip.Tip="4 x 9 600, popular RS-232 and modem speed">38400</ComboBoxItem>
+			<ComboBoxItem ToolTip.Tip="popular RS-232 speed">57600</ComboBoxItem>
+			<ComboBoxItem ToolTip.Tip="rocket">115200</ComboBoxItem>
+		</ComboBox>
+
+
+		<views:ConnectionActionView  Grid.Row="4" Grid.Column="0" />
+		<TextBlock Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+				   Text="{Binding Connection.Status}">
+			Connected
+		</TextBlock>
+		<TextBlock Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+				   Text="{Binding Connection.Status}">
+			Connected
+		</TextBlock>
+	</Grid>
+</UserControl>

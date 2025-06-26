@@ -1,0 +1,101 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:MBLite.ViewModels"
+			 xmlns:views="clr-namespace:MBLite.Views"
+             mc:Ignorable="d"
+             x:Class="MBLite.Views.MainView"
+             x:DataType="vm:MainViewModel">
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:MainViewModel />
+	</Design.DataContext>
+
+	<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+		<Grid ShowGridLines="False">
+
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"></ColumnDefinition>
+				<ColumnDefinition Width="16"></ColumnDefinition>
+				<ColumnDefinition Width="Auto"></ColumnDefinition>
+				<ColumnDefinition Width="Auto"></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"></RowDefinition>
+			</Grid.RowDefinitions>
+
+			<StackPanel Grid.Row="0" Grid.Column="0" Background="Transparent" Orientation="Vertical">
+				<StackPanel Background="Transparent" Orientation="Horizontal">
+					<Button Content="Download to ..."
+						MinWidth="128"
+						x:Name="DownloadToButton"
+						Command="{Binding DownloadToCommand}" />
+
+					<Button Content="Upload from ..."
+							MinWidth="128"
+							x:Name="UploadFromButton"
+							Command="{Binding UploadFromCommand}" />
+				</StackPanel>
+
+				<!-- Buttons for files -->
+				<StackPanel Background="Transparent" Orientation="Horizontal">
+					<!-- Save file -->
+					<Button Command="{Binding SaveFileCommand}"
+							Content="Save file"
+							ToolTip.Tip="Save file"
+							MinWidth="128" />
+
+					<!-- Open file -->
+					<Button Command="{Binding OpenFileCommand}"
+							Content="Open file"
+							ToolTip.Tip="Open file"
+							MinWidth="128" />
+				</StackPanel>
+				<Border Height="16"></Border>
+
+				<StackPanel Orientation="Horizontal">
+					<Border Height="32">
+						<TextBlock x:Name="message" Text="{Binding Connection.Id}"
+								   HorizontalAlignment="Center"
+								   VerticalAlignment="Center" />
+					</Border>
+					<ProgressBar x:Name="UploadProgressBar"
+						Minimum="0" Maximum="100" Value="{Binding #message.Text}"
+						ShowProgressText="True" />
+				</StackPanel>
+				<Border Height="16">
+					<TextBlock x:Name="GreetingTextBlock" Text="{Binding Greeting}"
+							   HorizontalAlignment="Center"
+							   VerticalAlignment="Center" />
+				</Border>
+				<Border Height="16">
+					<TextBlock x:Name="CurrentRowAddressTextBlock" Text="{Binding CurrentRowAddress}"
+							   HorizontalAlignment="Center"
+							   VerticalAlignment="Center" />
+				</Border>
+			</StackPanel>
+
+			<!-- Connection settings -->
+			<StackPanel Grid.Row="0" Grid.Column="2" Background="Transparent" Orientation="Vertical">
+				<views:ConnectionView />
+
+			</StackPanel>
+
+		</Grid>
+		<!--<views:EmptyView DataContext="{Binding EmptyViewModel}" />-->
+
+	</StackPanel>
+</UserControl>
+
+<!--
+			<TextBox AcceptsReturn="False"
+					 Text="{Binding Description}"
+					 Watermark="Enter a description"
+					 VerticalContentAlignment="Center" FontSize="14" Foreground="Black"
+					 Background="Aquamarine"
+					 Height=""
+					 Padding="2"
+					 Margin="4"
+					 MinWidth="256" />-->

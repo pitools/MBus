@@ -1,0 +1,92 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36212.18
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MBLite", "src\MBLite\MBLite.csproj", "{E4D2EF19-696E-C0D5-8279-2C674667ABCF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MBLite.Desktop", "src\MBLite.Desktop\MBLite.Desktop.csproj", "{21A43A87-30DD-9530-5619-6A6336B7DF14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MBTools", "src\MBTools\MBTools.csproj", "{782ACDB0-62BD-1736-104A-4DF5AEE867E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MBTools.Data", "src\MBTools.Data\MBTools.Data.csproj", "{44435DC8-B538-44CA-7C1B-11D1F67C584F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MBTools.Data.SQLite", "src\MBTools.Data.SQLite\MBTools.Data.SQLite.csproj", "{5AD81490-9640-FECF-C4A6-F99C66085ED6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MBTools.Desktop", "src\MBTools.Desktop\MBTools.Desktop.csproj", "{0DE0D213-B148-5F22-A211-38A755302688}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MBTools.Driver", "src\MBTools.Drivers\MBTools.Driver.csproj", "{96342BE8-5CAE-AB17-DFE7-E12F86ED3174}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MBTools.Models", "src\MBTools.Models\MBTools.Models.csproj", "{56FB17B0-3B7B-381B-F985-DE08EE4EEB7C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{0BF7D05E-FB74-4DA4-8B38-9ED5DBFF29FE}"
+	ProjectSection(SolutionItems) = preProject
+		docs\cheat-links.md = docs\cheat-links.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assemblies", "assemblies", "{BFF763F0-BE2E-462F-835E-4CC12119F3AA}"
+	ProjectSection(SolutionItems) = preProject
+		assemblies\NModbus.dll = assemblies\NModbus.dll
+		assemblies\NModbus.Serial.dll = assemblies\NModbus.Serial.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "materials", "materials", "{C1F9231A-9C81-406B-A482-8CB2C32F1364}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E4D2EF19-696E-C0D5-8279-2C674667ABCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4D2EF19-696E-C0D5-8279-2C674667ABCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4D2EF19-696E-C0D5-8279-2C674667ABCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4D2EF19-696E-C0D5-8279-2C674667ABCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21A43A87-30DD-9530-5619-6A6336B7DF14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21A43A87-30DD-9530-5619-6A6336B7DF14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21A43A87-30DD-9530-5619-6A6336B7DF14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21A43A87-30DD-9530-5619-6A6336B7DF14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{782ACDB0-62BD-1736-104A-4DF5AEE867E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{782ACDB0-62BD-1736-104A-4DF5AEE867E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{782ACDB0-62BD-1736-104A-4DF5AEE867E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{782ACDB0-62BD-1736-104A-4DF5AEE867E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44435DC8-B538-44CA-7C1B-11D1F67C584F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44435DC8-B538-44CA-7C1B-11D1F67C584F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44435DC8-B538-44CA-7C1B-11D1F67C584F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44435DC8-B538-44CA-7C1B-11D1F67C584F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AD81490-9640-FECF-C4A6-F99C66085ED6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AD81490-9640-FECF-C4A6-F99C66085ED6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AD81490-9640-FECF-C4A6-F99C66085ED6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AD81490-9640-FECF-C4A6-F99C66085ED6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DE0D213-B148-5F22-A211-38A755302688}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DE0D213-B148-5F22-A211-38A755302688}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DE0D213-B148-5F22-A211-38A755302688}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DE0D213-B148-5F22-A211-38A755302688}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96342BE8-5CAE-AB17-DFE7-E12F86ED3174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96342BE8-5CAE-AB17-DFE7-E12F86ED3174}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96342BE8-5CAE-AB17-DFE7-E12F86ED3174}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96342BE8-5CAE-AB17-DFE7-E12F86ED3174}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56FB17B0-3B7B-381B-F985-DE08EE4EEB7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56FB17B0-3B7B-381B-F985-DE08EE4EEB7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56FB17B0-3B7B-381B-F985-DE08EE4EEB7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56FB17B0-3B7B-381B-F985-DE08EE4EEB7C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E4D2EF19-696E-C0D5-8279-2C674667ABCF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{21A43A87-30DD-9530-5619-6A6336B7DF14} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{782ACDB0-62BD-1736-104A-4DF5AEE867E1} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{44435DC8-B538-44CA-7C1B-11D1F67C584F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{5AD81490-9640-FECF-C4A6-F99C66085ED6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{0DE0D213-B148-5F22-A211-38A755302688} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{96342BE8-5CAE-AB17-DFE7-E12F86ED3174} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{56FB17B0-3B7B-381B-F985-DE08EE4EEB7C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0BA9527E-4157-4E2E-AA56-1F4D591C11DA}
+	EndGlobalSection
+EndGlobal

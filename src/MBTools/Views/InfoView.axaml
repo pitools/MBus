@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:MBTools.ViewModels"
+			 xmlns:views="clr-namespace:MBTools.Views"
+             mc:Ignorable="d" d:DesignWidth="256" d:DesignHeight="256"
+             x:Class="MBTools.Views.InfoView"
+             x:DataType="vm:InfoViewModel">
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:InfoViewModel />
+	</Design.DataContext>
+
+	<StackPanel Background="AliceBlue" Orientation="Vertical">
+		<TextBlock Text="{Binding InfoAreaContent}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+		<TextBlock Text="{Binding InfoAreaContent}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+		<TextBlock Text="{Binding InfoAreaContent}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+	</StackPanel>
+</UserControl>

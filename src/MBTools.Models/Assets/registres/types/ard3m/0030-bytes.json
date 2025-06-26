@@ -1,0 +1,43 @@
+{
+  "description": "",
+  "register": "30",
+  "set": [
+    {
+      "id": "0",
+      "description": "Оставшееся время охлаждения при тепловой перегрузке двигателя",
+      "type": "byte",
+      "value": "0"
+    },
+    {
+      "id": "0",
+      "description": "Статусное слово",
+      "type": "bool",
+      "value": [
+        {
+          "id": "0",
+          "description": "Готов"
+        },
+        {
+          "id": "1",
+          "description": "Остановлен"
+        },
+        {
+          "id": "2",
+          "description": "Запуск"
+        },
+        {
+          "id": "3",
+          "description": "Работа"
+        },
+        {
+          "id": "4",
+          "description": "Предупреждение"
+        },
+        {
+          "id": "5",
+          "description": "Неисправность"
+        }
+      ]
+    }
+  ]
+}

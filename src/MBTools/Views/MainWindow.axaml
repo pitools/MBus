@@ -1,0 +1,57 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:MBTools.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:MBTools.Views"
+        mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="768"
+        x:Class="MBTools.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="MBTools" Width="1024" Height="768" Name="MainWindowName">
+	<Grid x:Name="parentGrid">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<views:MainView Grid.Row="0" />
+	</Grid>
+
+	<Window.Styles>
+		<Style Selector="Window">
+			<Setter Property="FontSize" Value="12" />
+			<Setter Property="FontWeight" Value="Normal" />
+			<Setter Property="Foreground" Value="Black" />
+		</Style>
+		<Style Selector="TextBlock">
+			<Setter Property="FontSize" Value="12" />
+			<Setter Property="Padding" Value="0" />
+			<Setter Property="Margin" Value="1" />
+			<Setter Property="FontWeight" Value="Normal" />
+			<Setter Property="Foreground" Value="Black" />
+		</Style>
+		<Style Selector="DataGrid.CellStyle">
+			<Setter Property="FontSize" Value="22" />
+			<Setter Property="Padding" Value="2" />
+		</Style>
+	</Window.Styles>
+
+</Window>
+
+<!--<Window.Resources>
+		<c:MyLogicConverter x:Key="LogicConverter" />
+
+		<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}" x:Key="MultiBound">
+			<Setter Property="IsEnabled">
+				<Setter.Value>
+					<MultiBinding Converter="{StaticResource LogicConverter}">
+						<Binding ElementName="switch" Path="IsEnabled" />
+						<Binding ElementName="switch" Path="IsChecked" />
+					</MultiBinding>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</Window.Resources>
+
+	<StackPanel Orientation="Horizontal">
+		<CheckBox Name="switch" />
+		<TextBox Name="textBox2" Text="Test" Style="{StaticResource MultiBound}" />
+	</StackPanel>-->
