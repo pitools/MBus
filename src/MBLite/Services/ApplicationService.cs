@@ -1,22 +1,22 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Platform.Storage;
-using Avalonia.VisualTree;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-
-using Avalonia.Input.Platform;
-using Avalonia.Styling;
 using System.IO.Ports;
-using System.Collections;
-
+using System.Linq;
+using System.Net.Sockets;
+using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input.Platform;
+using Avalonia.Platform.Storage;
+using Avalonia.Styling;
+using Avalonia.VisualTree;
 using NModbus;
-using NModbus.Serial;
+using NModbus.Extensions.Enron;
 using NModbus.IO;
+using NModbus.Serial;
 
 namespace MBLite.Services;
 
@@ -180,8 +180,6 @@ public class ApplicationService : IApplicationService
     {
         List<string> comPorts = new();
 
-        //var ports = SerialPort.GetPortNames();
-
         var ports = SerialPort.GetPortNames();
 
         foreach (string port in ports)
@@ -190,5 +188,52 @@ public class ApplicationService : IApplicationService
         }
         return comPorts;
     }
+
+    public static bool ReadRegisters()
+    {
+        try
+        {
+            ModbusTcpMasterReadHoldingRegisters32();
+        }
+
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+
+        return true;
+    }
+
+    /// <summary>
+    ///     Simple Modbus TCP master read inputs example.
+    /// </summary>
+    public static void ModbusTcpMasterReadHoldingRegisters32()
+    {
+        using (TcpClient client = new TcpClient("10.16.12.50", 502))
+        {
+            var factory = new ModbusFactory();
+            IModbusMaster master = factory.CreateMaster(client);
+
+
+            byte slaveId = 1;
+            ushort startAddress = 7165;
+            ushort numInputs = 5;
+            UInt32 www = 0x42c80083;
+            ushort[] data = new ushort[] { 10, 20, 30 };
+
+            master.WriteSingleRegister32(slaveId, startAddress, www);
+            master.WriteMultipleRegisters(slaveId, startAddress, data);
+
+
+            uint[] registers = master.ReadHoldingRegisters32(slaveId, startAddress, numInputs);
+
+            for (int i = 0; i < numInputs; i++)
+            {
+                Console.WriteLine($"Input {(startAddress + i)}={registers[i]}");
+            }
+        }
+    }
+
 
 }
