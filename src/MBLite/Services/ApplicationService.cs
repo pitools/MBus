@@ -14,6 +14,10 @@ using Avalonia.Styling;
 using System.IO.Ports;
 using System.Collections;
 
+using NModbus;
+using NModbus.Serial;
+using NModbus.IO;
+
 namespace MBLite.Services;
 
 public class ApplicationService : IApplicationService
@@ -175,7 +179,11 @@ public class ApplicationService : IApplicationService
     public List<string> GetComPorts()
     {
         List<string> comPorts = new();
+
+        //var ports = SerialPort.GetPortNames();
+
         var ports = SerialPort.GetPortNames();
+
         foreach (string port in ports)
         {
             comPorts.Add(port);
