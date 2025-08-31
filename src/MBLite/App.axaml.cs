@@ -6,7 +6,9 @@ using Avalonia.Logging;
 using Avalonia.Markup.Xaml;
 using MBLite.Services;
 using MBLite.ViewModels;
+using MBLite.ViewModels.Connection;
 using MBLite.Views;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -40,7 +42,18 @@ public partial class App : Application
             controlledLifetime.Exit += OnApplicationExit;
         }
 
-        base.OnFrameworkInitializationCompleted();
+        //base.OnFrameworkInitializationCompleted();
+
+        try
+        {
+            base.OnFrameworkInitializationCompleted();
+        }
+        catch (Exception ex)
+        {
+            // Логирование ошибки
+            _logger?.LogError(ex, "Framework initialization failed");
+            throw;
+        }
     }
 
     /// <summary>
@@ -55,12 +68,25 @@ public partial class App : Application
         {
             builder.AddDebug(); // Логи в Output window
             builder.AddConsole(); // Логи в консоль
+            builder.SetMinimumLevel(LogLevel.Debug);
             //builder.AddFile("logs/app.log"); //如果需要文件日志
         });
 
-        services.AddCommonServices();
-        // Здесь можно добавить дополнительные сервисы
+        // 2. Сервисы приложения (из AddCommonServices)
+        services.AddScoped<IApplicationService, ApplicationService>();
+        services.AddScoped<IFileService, FileService>();
+
+        // 3. Modbus сервисы
+        //services.AddSingleton<IModbusService, ModbusService>();
+        //services.AddSingleton<IMessageService, MessageService>();
+
+        // 4. ViewModels
+        services.AddTransient<MainViewModel>();
+        services.AddTransient<ConnectionViewModel>();
+
+        // 5. Дополнительные сервисы можно добавить здесь
         // services.AddTransient<IMyService, MyService>();
+
         return services;
     }
 
@@ -141,47 +167,3 @@ public partial class App : Application
         }
     }
 }
-
-//public partial class App : Application
-//{
-//    public override void Initialize()
-//    {
-//        AvaloniaXamlLoader.Load(this);
-//    }
-
-//    public override void OnFrameworkInitializationCompleted()
-//    {
-//        // Register all the services needed for the application to run
-//        var collection = new ServiceCollection();
-//        collection.AddCommonServices();
-
-//        // Creates a ServiceProvider containing services from the provided IServiceCollection
-//        var services = collection.BuildServiceProvider();
-
-//        var vm = services.GetRequiredService<MainViewModel>();
-
-//        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-//        {
-//            desktop.MainWindow = new MainWindow
-//            {
-//                //DataContext = new MainViewModel()
-//                DataContext = vm
-//            };
-//        }
-//        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
-//        {
-//            singleViewPlatform.MainView = new MainView
-//            {
-//                //DataContext = new MainViewModel()
-//                DataContext = vm
-//            };
-//        }
-
-//        base.OnFrameworkInitializationCompleted();
-//    }
-//}
-// Line below is needed to remove Avalonia data validation.
-// Without this line you will get duplicate validations from both Avalonia and CT
-//BindingPlugins.DataValidators.RemoveAt(0);
-
-

@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Logging;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -15,6 +17,7 @@ using MBLite.Models.Csv;
 using MBLite.Services;
 using MBLite.ViewModels.Connection;
 using MBLite.Views;
+using Microsoft.Extensions.Logging;
 
 namespace MBLite.ViewModels;
 
@@ -22,29 +25,32 @@ public partial class MainViewModel : ViewModelBase
 {
     // Services
     private readonly IApplicationService _applicationService;
+    private readonly IFileService _fileService;
+    private readonly ILogger<MainViewModel> _logger;
 
     private readonly List<RecordRegister> _recordRegisters = new List<RecordRegister>();
 
-    // Test fields
-    private string _greeting = "Статус";
+    [ObservableProperty]
     private int _currentRowAddress = 12345;
 
-    // Fields of the view models
+    [ObservableProperty]
     private Progress<double> _progress = new Progress<double>();
 
     public MainViewModel()
-    { }
+    {
+    }
 
-    public MainViewModel(IApplicationService applicationService)
+    public MainViewModel(
+        IApplicationService applicationService,
+        IFileService fileService,
+        ILogger<MainViewModel> logger)
     {
         _applicationService = applicationService;
+        _fileService = fileService;
+        _logger = logger;
 
-        OpenFileCommand = new AsyncRelayCommand(OpenFileActionAsync);
-        SaveFileCommand = new AsyncRelayCommand(SaveFileActionAsync, SaveFileCanExecute);
-        DownloadToCommand = new RelayCommand(DownloadTo, DownloadToCanExecute);
-        UploadFromCommand = new RelayCommand(UploadFrom);
-
-        TestConnectionCommand = new AsyncRelayCommand(TestConnectionActionAsync);
+        // Инициализируем команды
+        InitializeCommands();
 
         Connection = new();
         Connection.ComPorts = new ObservableCollection<string>(_applicationService.GetComPorts());
@@ -53,38 +59,29 @@ public partial class MainViewModel : ViewModelBase
         {
             Connection.SelectedPort = Connection.ComPorts[0];
         }
+        // Логируем инициализацию
+        _logger.LogInformation("MainViewModel инициализирован");
     }
 
     // Commands
-    public IAsyncRelayCommand OpenFileCommand { get; }
-    public IRelayCommand DownloadToCommand { get; }
-    public IAsyncRelayCommand SaveFileCommand { get; }
-    public IAsyncRelayCommand TestConnectionCommand { get; }
-    public IRelayCommand UploadFromCommand { get; }
-
-    public string? Greeting
+    public IAsyncRelayCommand OpenFileCommand { get; private set; } = null!;
+    public IAsyncRelayCommand SaveFileCommand { get; private set; } = null!;
+    public IRelayCommand DownloadToCommand { get; private set; } = null!;
+    public IRelayCommand UploadFromCommand { get; private set; } = null!;
+    public IAsyncRelayCommand TestConnectionCommand { get; private set; } = null!;
+    private void InitializeCommands()
     {
-        get => _greeting;
-        set => SetProperty(ref _greeting, value);
+        OpenFileCommand = new AsyncRelayCommand(OpenFileActionAsync);
+        SaveFileCommand = new AsyncRelayCommand(SaveFileActionAsync, SaveFileCanExecute);
+        DownloadToCommand = new RelayCommand(DownloadTo, DownloadToCanExecute);
+        UploadFromCommand = new RelayCommand(UploadFrom);
+        TestConnectionCommand = new AsyncRelayCommand(TestConnectionActionAsync);
     }
-
-    public int CurrentRowAddress
-    {
-        get => _currentRowAddress;
-        set => SetProperty(ref _currentRowAddress, value);
-    }
-
-    public Progress<double>? Progress
-    {
-        get => _progress;
-        set => SetProperty(ref _progress, value);
-    }
-
 
     // For design time
     private void DownloadTo()
     {
-        Greeting = "DownloadTo";
+        Status = "DownloadTo";
     }
 
     private bool DownloadToCanExecute()
@@ -93,7 +90,7 @@ public partial class MainViewModel : ViewModelBase
     }
     private void UploadFrom()
     {
-        Greeting = "UploadFrom";
+        Status = "UploadFrom";
     }
 
 
@@ -104,9 +101,9 @@ public partial class MainViewModel : ViewModelBase
         {
             Connection.Id = (int)args;
         };
-        if (_applicationService is { })
+        if (_fileService is { })
         {
-            await _applicationService.OpenFileAsync(
+            await _fileService.OpenFileAsync(
                 OpenFileCallbackAsync,
                 new List<string>(new[] { "Csv", "Json", "All" }),
                 "Open",
@@ -130,26 +127,36 @@ public partial class MainViewModel : ViewModelBase
             records = csv.GetRecordsAsync<RecordRegister>();
 
             double percentComplete;
-            await foreach (var register in records)
+
+            try
             {
-                _recordRegisters.Add(register);
-                await Task.Delay(5); // Simulate long-running operation
-                percentComplete = (double)_recordRegisters.Count / 148 * 100;
-                progress?.Report(percentComplete);
-                CurrentRowAddress = register.Address;
+                await foreach (var register in records)
+                {
+                    _recordRegisters.Add(register);
+                    await Task.Delay(5); // Simulate long-running operation
+                    percentComplete = (double)_recordRegisters.Count / 148 * 100;
+                    progress?.Report(percentComplete);
+                    CurrentRowAddress = register.Address;
+                }
+                _logger.LogInformation("Парсинг CSV!");
+
+            }
+            catch (CsvHelperException ex)
+            {
+                _logger.LogError(ex, "Ошибка парсинга CSV");
             }
         }
     }
 
     private async Task SaveFileActionAsync()
     {
-        if (_applicationService is { } && Greeting is { })
+        if (_fileService is { } && Status is { })
         {
-            await _applicationService.SaveFileAsync(
+            await _fileService.SaveFileAsync(
                 SaveFileCallbackAsync,
                 new List<string>(new[] { "Csv", "Json", "All" }),
                 "Save as ...",
-                Greeting ?? "ard3m",
+                Status ?? "ard3m",
                 "json");
         }
     }
