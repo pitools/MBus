@@ -58,6 +58,9 @@ namespace MBLite.ViewModels.Connection
         //    set => SetProperty(ref _selectedPort, value);
         //}
 
+        public ConnectionViewModel()
+        { }
+        
         public ConnectionViewModel(
             ILogger<ConnectionViewModel> logger)
         {

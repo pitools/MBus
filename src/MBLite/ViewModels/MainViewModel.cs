@@ -43,7 +43,8 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel(
         IApplicationService applicationService,
         IFileService fileService,
-        ILogger<MainViewModel> logger)
+        ILogger<MainViewModel> logger,
+        ILogger<ConnectionViewModel> connectionLogger)
     {
         _applicationService = applicationService;
         _fileService = fileService;
@@ -52,7 +53,7 @@ public partial class MainViewModel : ViewModelBase
         // Инициализируем команды
         InitializeCommands();
 
-        Connection = new();
+        Connection = new(connectionLogger);
         Connection.ComPorts = new ObservableCollection<string>(_applicationService.GetComPorts());
 
         if (Connection.ComPorts.Any<string>())
@@ -86,7 +87,7 @@ public partial class MainViewModel : ViewModelBase
 
     private bool DownloadToCanExecute()
     {
-        return Connection.Status;
+        return Connection.IsConnecting;
     }
     private void UploadFrom()
     {
@@ -99,7 +100,7 @@ public partial class MainViewModel : ViewModelBase
         //var progress = new Progress<double>();
         Progress.ProgressChanged += (sender, args) =>
         {
-            Connection.Id = (int)args;
+            Connection.UnitId = (int)args;
         };
         if (_fileService is { })
         {
@@ -181,8 +182,8 @@ public partial class MainViewModel : ViewModelBase
 
     private async Task TestConnectionActionAsync()
     {
-        Connection.Status = !Connection.Status;
-        Connection.Id++;
+        Connection.IsConnecting = !Connection.IsConnecting;
+        Connection.UnitId++;
         DownloadToCommand.NotifyCanExecuteChanged();
     }
     //private RelayCommand? openFileCommand;

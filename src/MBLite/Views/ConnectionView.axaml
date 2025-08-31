@@ -19,9 +19,9 @@
 		<vm:MainViewModel>
 			<vm:MainViewModel.Connection>
 				<vmc:ConnectionViewModel>
-					<vmc:ConnectionViewModel.Id>
+					<vmc:ConnectionViewModel.UnitId>
 						1
-					</vmc:ConnectionViewModel.Id>
+					</vmc:ConnectionViewModel.UnitId>
 					<vmc:ConnectionViewModel.ComPorts>
 						<objectModel:ObservableCollection x:TypeArguments="sys:String">
 							<sys:String>COM1</sys:String>
@@ -65,7 +65,7 @@
 		</ComboBox>
 		<Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Id</Label>
 		<TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Watermark="Id"
-				 Text="{Binding Path=Connection.Id}" />
+				 Text="{Binding Path=Connection.UnitId}" />
 
 		<Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Baudrate</Label>
 		<ComboBox Grid.Row="3" Grid.Column="1" SelectedIndex="0" MaxDropDownHeight="128" VerticalAlignment="Center" HorizontalAlignment="Stretch">
@@ -83,11 +83,11 @@
 
 		<views:ConnectionActionView  Grid.Row="4" Grid.Column="0" />
 		<TextBlock Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-				   Text="{Binding Connection.Status}">
+				   Text="{Binding Connection.IsConnecting}">
 			Connected
 		</TextBlock>
 		<TextBlock Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-				   Text="{Binding Connection.Status}">
+				   Text="{Binding Connection.IsConnecting}">
 			Connected
 		</TextBlock>
 	</Grid>
