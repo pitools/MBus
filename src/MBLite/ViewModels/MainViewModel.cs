@@ -20,27 +20,21 @@ namespace MBLite.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    private static bool _downloadToCanExecute = true;
-
     // Services
     private readonly IApplicationService _applicationService;
 
     private readonly List<RecordRegister> _recordRegisters = new List<RecordRegister>();
 
-    // Commands
-    private RelayCommand? _downloadToCommand;
-
     // Test fields
     private string _greeting = "Статус";
     private int _currentRowAddress = 12345;
+
     // Fields of the view models
     private Progress<double> _progress = new Progress<double>();
-    //private Func<bool> _funcDownloadToCanExecute = DownloadToCanExecute;
-    private RelayCommand? _uploadFromCommand;
 
     public MainViewModel()
     { }
-    
+
     public MainViewModel(IApplicationService applicationService)
     {
         _applicationService = applicationService;
@@ -52,7 +46,6 @@ public partial class MainViewModel : ViewModelBase
 
         TestConnectionCommand = new AsyncRelayCommand(TestConnectionActionAsync);
 
-        //TestConnectionCommand = new AsyncRelayCommand(TestConnectionActionAsync);
         Connection = new();
         Connection.ComPorts = new ObservableCollection<string>(_applicationService.GetComPorts());
 
@@ -62,7 +55,12 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
+    // Commands
+    public IAsyncRelayCommand OpenFileCommand { get; }
     public IRelayCommand DownloadToCommand { get; }
+    public IAsyncRelayCommand SaveFileCommand { get; }
+    public IAsyncRelayCommand TestConnectionCommand { get; }
+    public IRelayCommand UploadFromCommand { get; }
 
     public string? Greeting
     {
@@ -76,20 +74,14 @@ public partial class MainViewModel : ViewModelBase
         set => SetProperty(ref _currentRowAddress, value);
     }
 
-    // Properties
-    public IAsyncRelayCommand OpenFileCommand { get; }
-
     public Progress<double>? Progress
     {
         get => _progress;
         set => SetProperty(ref _progress, value);
     }
 
-    public IAsyncRelayCommand SaveFileCommand { get; }
-    public IAsyncRelayCommand TestConnectionCommand { get; }
-    public IRelayCommand UploadFromCommand { get; }
-    // For design time
 
+    // For design time
     private void DownloadTo()
     {
         Greeting = "DownloadTo";
@@ -99,6 +91,11 @@ public partial class MainViewModel : ViewModelBase
     {
         return Connection.Status;
     }
+    private void UploadFrom()
+    {
+        Greeting = "UploadFrom";
+    }
+
 
     private async Task OpenFileActionAsync()
     {
@@ -139,7 +136,7 @@ public partial class MainViewModel : ViewModelBase
                 await Task.Delay(5); // Simulate long-running operation
                 percentComplete = (double)_recordRegisters.Count / 148 * 100;
                 progress?.Report(percentComplete);
-                CurrentRowAddress = register.Address; 
+                CurrentRowAddress = register.Address;
             }
         }
     }
@@ -174,6 +171,7 @@ public partial class MainViewModel : ViewModelBase
     {
         return true;
     }
+
     private async Task TestConnectionActionAsync()
     {
         Connection.Status = !Connection.Status;
@@ -181,29 +179,4 @@ public partial class MainViewModel : ViewModelBase
         DownloadToCommand.NotifyCanExecuteChanged();
     }
     //private RelayCommand? openFileCommand;
-    private void UploadFrom()
-    {
-        Greeting = "UploadFrom";
-    }
-
-    //private void OpenFile()
-    //{
-    //    if (_downloadToCanExecute)
-    //    {
-    //        _downloadToCanExecute = false;
-    //        downloadToCommand.NotifyCanExecuteChanged();
-    //    }
-    //    else
-    //    {
-    //        _downloadToCanExecute = true;
-    //        downloadToCommand.NotifyCanExecuteChanged();
-
-    //    }
-    //}
-}
-
-public class Foo
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
 }
