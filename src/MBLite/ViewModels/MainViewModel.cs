@@ -28,6 +28,17 @@ public partial class MainViewModel : ViewModelBase
     private readonly IFileService _fileService;
     private readonly ILogger<MainViewModel> _logger;
 
+    private ConnectionViewModel _connectionVM;
+    public ConnectionViewModel ConnectionVM
+    {
+        get => _connectionVM;
+        set
+        {
+            _connectionVM = value;
+            OnPropertyChanged();
+        }
+    }
+
     private readonly List<RecordRegister> _recordRegisters = new List<RecordRegister>();
 
     [ObservableProperty]
@@ -43,23 +54,19 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel(
         IApplicationService applicationService,
         IFileService fileService,
-        ILogger<MainViewModel> logger,
-        ILogger<ConnectionViewModel> connectionLogger)
+        ILogger<MainViewModel> logger)
     {
         _applicationService = applicationService;
         _fileService = fileService;
         _logger = logger;
 
+        ConnectionVM = new ConnectionViewModel();
+        // Инициализация портов
+
+
         // Инициализируем команды
         InitializeCommands();
 
-        Connection = new(connectionLogger);
-        Connection.ComPorts = new ObservableCollection<string>(_applicationService.GetComPorts());
-
-        if (Connection.ComPorts.Any<string>())
-        {
-            Connection.SelectedPort = Connection.ComPorts[0];
-        }
         // Логируем инициализацию
         _logger.LogInformation("MainViewModel инициализирован");
     }
@@ -87,7 +94,8 @@ public partial class MainViewModel : ViewModelBase
 
     private bool DownloadToCanExecute()
     {
-        return Connection.IsConnecting;
+        //return Connection.IsConnecting;
+        return true;
     }
     private void UploadFrom()
     {
@@ -100,7 +108,7 @@ public partial class MainViewModel : ViewModelBase
         //var progress = new Progress<double>();
         Progress.ProgressChanged += (sender, args) =>
         {
-            Connection.UnitId = (int)args;
+            //Connection.UnitId = (int)args;
         };
         if (_fileService is { })
         {
@@ -182,8 +190,8 @@ public partial class MainViewModel : ViewModelBase
 
     private async Task TestConnectionActionAsync()
     {
-        Connection.IsConnecting = !Connection.IsConnecting;
-        Connection.UnitId++;
+        //Connection.IsConnecting = !Connection.IsConnecting;
+        //Connection.UnitId++;
         DownloadToCommand.NotifyCanExecuteChanged();
     }
     //private RelayCommand? openFileCommand;

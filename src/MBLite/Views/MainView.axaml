@@ -55,9 +55,9 @@
 				</StackPanel>
 				<Border Height="16"></Border>
 
-				<StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Vertical">
 					<Border Height="32">
-						<TextBlock x:Name="message" Text="{Binding Connection.Id}"
+						<TextBlock x:Name="message" Text="'{Binding Connection.Id}'"
 								   HorizontalAlignment="Center"
 								   VerticalAlignment="Center" />
 					</Border>
@@ -79,8 +79,8 @@
 
 			<!-- Connection settings -->
 			<StackPanel Grid.Row="0" Grid.Column="2" Background="Transparent" Orientation="Vertical">
-				<views:ConnectionView />
-
+				<!-- Вариант 1: Прямая привязка к свойству -->
+				<views:ConnectionView DataContext="{Binding ConnectionVM}" />
 			</StackPanel>
 
 		</Grid>

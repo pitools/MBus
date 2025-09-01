@@ -15,6 +15,7 @@ namespace MBLite.ViewModels.Connection
 {
     public partial class ConnectionViewModel : ViewModelBase
     {
+        private readonly IApplicationService _applicationService;
         private readonly ILogger<ConnectionViewModel> _logger;
 
         [ObservableProperty]
@@ -60,13 +61,24 @@ namespace MBLite.ViewModels.Connection
 
         public ConnectionViewModel()
         { }
-        
+
         public ConnectionViewModel(
+            IApplicationService applicationService,
             ILogger<ConnectionViewModel> logger)
         {
+
+            ComPorts = new ObservableCollection<string>(_applicationService.GetComPorts());
+            if (ComPorts.Any<string>())
+            {
+                SelectedPort = ComPorts[0];
+            }
             _logger = logger;
 
             InitializeCommands();
+
+            // Логируем инициализацию
+            _logger.LogInformation("ConnectionViewModel инициализирован");
+
         }
 
         private void InitializeCommands()
