@@ -57,12 +57,12 @@
 
 				<StackPanel Orientation="Vertical">
 					<Border Height="32">
-						<TextBlock x:Name="message" Text="'{Binding Connection.Id}'"
+						<TextBlock x:Name="message" Text="{Binding Connection.UnitId}"
 								   HorizontalAlignment="Center"
 								   VerticalAlignment="Center" />
 					</Border>
 					<ProgressBar x:Name="UploadProgressBar"
-						Minimum="0" Maximum="100" Value="{Binding #message.Text}"
+						Minimum="0" Maximum="100" Value="{Binding UploadProgress}"
 						ShowProgressText="True" />
 				</StackPanel>
 				<Border Height="16">

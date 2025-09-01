@@ -60,9 +60,20 @@ namespace MBLite.ViewModels.Connection
 
         }
 
+
+        // Commands
+        public IAsyncRelayCommand TestConnectionCommand { get; private set; } = null!;
         private void InitializeCommands()
         {
-
+            TestConnectionCommand = new AsyncRelayCommand(TestConnectionActionAsync);
         }
+
+        private async Task TestConnectionActionAsync()
+        {
+            IsConnecting = !IsConnecting;
+            UnitId++;
+        }
+
+
     }
 }

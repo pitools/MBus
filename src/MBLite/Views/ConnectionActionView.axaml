@@ -2,28 +2,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:MBLite.ViewModels;assembly=MBLite"
+             xmlns:vmc="clr-namespace:MBLite.ViewModels.Connection;assembly=MBLite"
 			 
              mc:Ignorable="d" d:DesignWidth="256" d:DesignHeight="256"
 
 			 x:Class="MBLite.Views.ConnectionActionView"
-             x:CompileBindings="True" x:DataType="vm:MainViewModel">
+             x:CompileBindings="True" x:DataType="vmc:ConnectionViewModel">
 	<Design.DataContext>
 		<!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext
 		 property in code (look at App.axaml.cs) -->
-		<vm:MainViewModel>
-		</vm:MainViewModel>
+		<vmc:ConnectionViewModel>
+		</vmc:ConnectionViewModel>
 	</Design.DataContext>
 
 	<StackPanel Orientation="Horizontal">
 		<Button VerticalAlignment="Center"
 			Command="{Binding TestConnectionCommand}"
 			Content="Test"
-			MinWidth="32" />
-		<Button VerticalAlignment="Center"
-			Command="{Binding OpenFileCommand}"
-			Content="Open"
 			MinWidth="32" />
 	</StackPanel>
 </UserControl>

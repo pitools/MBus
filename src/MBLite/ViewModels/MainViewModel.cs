@@ -43,6 +43,9 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     private Progress<double> _progress = new Progress<double>();
+    [ObservableProperty]
+    private int _uploadProgress = 0;
+
 
     public MainViewModel()
     {
@@ -85,14 +88,13 @@ public partial class MainViewModel : ViewModelBase
     public IAsyncRelayCommand SaveFileCommand { get; private set; } = null!;
     public IRelayCommand DownloadToCommand { get; private set; } = null!;
     public IRelayCommand UploadFromCommand { get; private set; } = null!;
-    public IAsyncRelayCommand TestConnectionCommand { get; private set; } = null!;
+
     private void InitializeCommands()
     {
         OpenFileCommand = new AsyncRelayCommand(OpenFileActionAsync);
         SaveFileCommand = new AsyncRelayCommand(SaveFileActionAsync, SaveFileCanExecute);
         DownloadToCommand = new RelayCommand(DownloadTo, DownloadToCanExecute);
         UploadFromCommand = new RelayCommand(UploadFrom);
-        TestConnectionCommand = new AsyncRelayCommand(TestConnectionActionAsync, () => true);
     }
 
     // For design time
@@ -117,7 +119,7 @@ public partial class MainViewModel : ViewModelBase
         //var progress = new Progress<double>();
         Progress.ProgressChanged += (sender, args) =>
         {
-            //Connection.UnitId = (int)args;
+            UploadProgress = (int)args;
         };
         if (_fileService is { })
         {
@@ -197,11 +199,4 @@ public partial class MainViewModel : ViewModelBase
         return true;
     }
 
-    private async Task TestConnectionActionAsync()
-    {
-        Connection.IsConnecting = !Connection.IsConnecting;
-        Connection.UnitId++;
-        DownloadToCommand.NotifyCanExecuteChanged();
-    }
-    //private RelayCommand? openFileCommand;
 }
