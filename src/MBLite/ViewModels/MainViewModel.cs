@@ -73,6 +73,7 @@ public partial class MainViewModel : ViewModelBase
             if (e.PropertyName == nameof(ConnectionViewModel.IsConnecting))
             {
                 // Логика при изменении состояния подключения
+                Status = "Подключено!";
             }
         };
 
