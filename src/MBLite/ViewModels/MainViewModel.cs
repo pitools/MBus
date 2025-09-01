@@ -12,7 +12,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CsvHelper;
 using CsvHelper.Configuration;
-using MBLite.Models.Connection;
 using MBLite.Models.Csv;
 using MBLite.Services;
 using MBLite.ViewModels.Connection;
@@ -28,16 +27,14 @@ public partial class MainViewModel : ViewModelBase
     private readonly IFileService _fileService;
     private readonly ILogger<MainViewModel> _logger;
 
-    private ConnectionViewModel _connectionVM;
-    public ConnectionViewModel ConnectionVM
-    {
-        get => _connectionVM;
-        set
-        {
-            _connectionVM = value;
-            OnPropertyChanged();
-        }
-    }
+    /// <summary>
+    /// Поле для дочернего ViewModel с автоматическим созданием свойства
+    /// Атрибут [ObservableProperty] создает свойство ConnectionViewModel
+    /// с уведомлениями об изменении
+    /// </summary>
+    [ObservableProperty]
+    private ConnectionViewModel _connectionViewModel;
+
 
     private readonly List<RecordRegister> _recordRegisters = new List<RecordRegister>();
 
@@ -60,8 +57,20 @@ public partial class MainViewModel : ViewModelBase
         _fileService = fileService;
         _logger = logger;
 
-        ConnectionVM = new ConnectionViewModel();
         // Инициализация портов
+
+        // Создаем экземпляр дочернего ViewModel
+        ConnectionViewModel = new ConnectionViewModel();
+
+        // Подписываемся на события дочернего ViewModel (опционально)
+        ConnectionViewModel.PropertyChanged += (s, e) =>
+        {
+            // Можно реагировать на изменения в дочернем ViewModel
+            if (e.PropertyName == nameof(ConnectionViewModel.IsConnecting))
+            {
+                // Логика при изменении состояния подключения
+            }
+        };
 
 
         // Инициализируем команды

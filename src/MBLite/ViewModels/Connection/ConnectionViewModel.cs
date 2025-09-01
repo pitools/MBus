@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MBLite.Services;
 using Microsoft.Extensions.Logging;
+using MBLite.Models;
 
 namespace MBLite.ViewModels.Connection
 {
@@ -19,17 +20,18 @@ namespace MBLite.ViewModels.Connection
         private readonly ILogger<ConnectionViewModel> _logger;
 
         [ObservableProperty]
-        private string _port = "COM1";
-        [ObservableProperty]
         private ObservableCollection<string> _comPorts = new();
-        [ObservableProperty]
-        private string _baudrate = "19200";
-        [ObservableProperty]
-        private int _unitId = 1;
         [ObservableProperty]
         private string _selectedPort = string.Empty;
         [ObservableProperty]
         private bool _isConnecting;
+
+
+        /// <summary>
+        /// Настройки подключения - публичное свойство для привязки из View
+        /// </summary>
+        [ObservableProperty]
+        private ConnectionSettings _connectionSettings = new();
 
         //public string Port
         //{
@@ -66,12 +68,14 @@ namespace MBLite.ViewModels.Connection
             IApplicationService applicationService,
             ILogger<ConnectionViewModel> logger)
         {
-
             ComPorts = new ObservableCollection<string>(_applicationService.GetComPorts());
             if (ComPorts.Any<string>())
             {
                 SelectedPort = ComPorts[0];
             }
+
+            ConnectionSettings.Port = SelectedPort;
+
             _logger = logger;
 
             InitializeCommands();
