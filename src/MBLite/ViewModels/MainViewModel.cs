@@ -33,7 +33,7 @@ public partial class MainViewModel : ViewModelBase
     /// с уведомлениями об изменении
     /// </summary>
     [ObservableProperty]
-    private ConnectionViewModel _connectionViewModel;
+    private ConnectionViewModel _connection;
 
 
     private readonly List<RecordRegister> _recordRegisters = new List<RecordRegister>();
@@ -51,19 +51,20 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel(
         IApplicationService applicationService,
         IFileService fileService,
-        ILogger<MainViewModel> logger)
+        ILogger<MainViewModel> logger,
+        ConnectionViewModel connection)
     {
         _applicationService = applicationService;
         _fileService = fileService;
         _logger = logger;
+        _connection = connection;
 
         // Инициализация портов
 
         // Создаем экземпляр дочернего ViewModel
-        ConnectionViewModel = new ConnectionViewModel();
-
+        
         // Подписываемся на события дочернего ViewModel (опционально)
-        ConnectionViewModel.PropertyChanged += (s, e) =>
+        Connection.PropertyChanged += (s, e) =>
         {
             // Можно реагировать на изменения в дочернем ViewModel
             if (e.PropertyName == nameof(ConnectionViewModel.IsConnecting))
@@ -71,7 +72,6 @@ public partial class MainViewModel : ViewModelBase
                 // Логика при изменении состояния подключения
             }
         };
-
 
         // Инициализируем команды
         InitializeCommands();
@@ -92,7 +92,7 @@ public partial class MainViewModel : ViewModelBase
         SaveFileCommand = new AsyncRelayCommand(SaveFileActionAsync, SaveFileCanExecute);
         DownloadToCommand = new RelayCommand(DownloadTo, DownloadToCanExecute);
         UploadFromCommand = new RelayCommand(UploadFrom);
-        TestConnectionCommand = new AsyncRelayCommand(TestConnectionActionAsync);
+        TestConnectionCommand = new AsyncRelayCommand(TestConnectionActionAsync, () => true);
     }
 
     // For design time
@@ -199,8 +199,8 @@ public partial class MainViewModel : ViewModelBase
 
     private async Task TestConnectionActionAsync()
     {
-        //Connection.IsConnecting = !Connection.IsConnecting;
-        //Connection.UnitId++;
+        Connection.IsConnecting = !Connection.IsConnecting;
+        Connection.UnitId++;
         DownloadToCommand.NotifyCanExecuteChanged();
     }
     //private RelayCommand? openFileCommand;

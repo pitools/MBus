@@ -80,7 +80,7 @@
 			<!-- Connection settings -->
 			<StackPanel Grid.Row="0" Grid.Column="2" Background="Transparent" Orientation="Vertical">
 				<!-- Вариант 1: Прямая привязка к свойству -->
-				<views:ConnectionView DataContext="{Binding ConnectionViewModel}" />
+				<views:ConnectionView DataContext="{Binding Connection}" />
 			</StackPanel>
 
 		</Grid>

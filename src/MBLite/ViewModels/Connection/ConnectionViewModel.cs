@@ -24,57 +24,32 @@ namespace MBLite.ViewModels.Connection
         [ObservableProperty]
         private string _selectedPort = string.Empty;
         [ObservableProperty]
-        private bool _isConnecting;
-
-
-        /// <summary>
-        /// Настройки подключения - публичное свойство для привязки из View
-        /// </summary>
+        private bool _isConnecting = false;
         [ObservableProperty]
-        private ConnectionSettings _connectionSettings = new();
-
-        //public string Port
-        //{
-        //    get => _port;
-        //    set => SetProperty(ref _port, value);
-        //}
-        //public ObservableCollection<string> ComPorts
-        //{
-        //    get => _comPorts;
-        //    set => SetProperty(ref _comPorts, value);
-        //}
-
-        //public string Baudrate
-        //{
-        //    get => _baudrate;
-        //    set => SetProperty(ref _baudrate, value);
-        //}
-        //public int Id
-        //{
-        //    get => _id;
-        //    set => SetProperty(ref _id, value);
-        //}
-
-        //public string SelectedPort
-        //{
-        //    get => _selectedPort;
-        //    set => SetProperty(ref _selectedPort, value);
-        //}
+        private string _port = "COM1";
+        [ObservableProperty]
+        private string _baudrate = "19200";
+        [ObservableProperty]
+        private int _unitId = 12;
 
         public ConnectionViewModel()
-        { }
+        {
+        }
 
         public ConnectionViewModel(
             IApplicationService applicationService,
             ILogger<ConnectionViewModel> logger)
         {
+            _applicationService = applicationService;
+            _logger = logger;
             ComPorts = new ObservableCollection<string>(_applicationService.GetComPorts());
+
             if (ComPorts.Any<string>())
             {
                 SelectedPort = ComPorts[0];
             }
 
-            ConnectionSettings.Port = SelectedPort;
+            Port = SelectedPort;
 
             _logger = logger;
 
@@ -87,23 +62,7 @@ namespace MBLite.ViewModels.Connection
 
         private void InitializeCommands()
         {
-            //ConnectCommand = new AsyncRelayCommand(ConnectAsync, CanConnect);
-            //CancelCommand = new RelayCommand(Cancel);
-            //SelectRecentAddressCommand = new RelayCommand<string>(SelectRecentAddress);
+
         }
-
-
-
-
-        //private async Task TestConnectionActionAsync()
-        //{
-        //    ConnectionStatus = !ConnectionStatus;
-        //    OpenFileCommand.NotifyCanExecuteChanged();
-
-        //    Connection.Id++;
-        //    Connection = Connection;
-        //}
-
-
     }
 }

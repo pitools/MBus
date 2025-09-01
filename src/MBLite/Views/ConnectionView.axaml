@@ -5,22 +5,25 @@
              xmlns:vm="clr-namespace:MBLite.ViewModels"
 			 xmlns:vmc="clr-namespace:MBLite.ViewModels.Connection"
 			 xmlns:views="clr-namespace:MBLite.Views"
+			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System.ObjectModel"
              mc:Ignorable="d" d:DesignWidth="256" d:DesignHeight="256"
-			 x:Class="MBLite.Views.ConnectionView">
-	<Design.DataContext>
-		<!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext
-		 property in code (look at App.axaml.cs) -->
-		<vmc:ConnectionViewModel />
-	</Design.DataContext>
+			 x:Class="MBLite.Views.ConnectionView"
+			 x:CompileBindings="True" x:DataType="vmc:ConnectionViewModel">
 	<!--<Design.DataContext>
 		--><!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext
 		 property in code (look at App.axaml.cs) --><!--
+		<vmc:ConnectionViewModel />
+	</Design.DataContext>-->
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext
+		 property in code (look at App.axaml.cs) -->
 		<vmc:ConnectionViewModel>
-					<vmc:ConnectionViewModel.UnitId>
+					<!--<vmc:ConnectionViewModel.UnitId>
 						123
-					</vmc:ConnectionViewModel.UnitId>
+					</vmc:ConnectionViewModel.UnitId>-->
 					<vmc:ConnectionViewModel.ComPorts>
 						<objectModel:ObservableCollection x:TypeArguments="sys:String">
 							<sys:String>COM1</sys:String>
@@ -31,7 +34,7 @@
 					</vmc:ConnectionViewModel.ComPorts>
 					<vmc:ConnectionViewModel.SelectedPort>COM1</vmc:ConnectionViewModel.SelectedPort>
 				</vmc:ConnectionViewModel>
-	</Design.DataContext>-->
+	</Design.DataContext>
 
 	<Grid ShowGridLines="False">
 		<Grid.ColumnDefinitions>
@@ -62,10 +65,10 @@
 		</ComboBox>
 		<Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Id</Label>
 		<TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Watermark="Id"
-				 Text="{Binding ConnectionSettings.UnitId}" />
+				 Text="{Binding UnitId}" />
 
 		<Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Baudrate</Label>
-		<ComboBox Grid.Row="3" Grid.Column="1" SelectedIndex="0" MaxDropDownHeight="128" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+		<ComboBox Grid.Row="3" Grid.Column="1" SelectedIndex="2" MaxDropDownHeight="128" VerticalAlignment="Center" HorizontalAlignment="Stretch">
 			<ComboBoxItem ToolTip.Tip="boy, this is really fast...">1200</ComboBoxItem>
 			<ComboBoxItem ToolTip.Tip="the speed modem that every machine came with after 9600 was available...">2400</ComboBoxItem>
 			<ComboBoxItem ToolTip.Tip="at last, fast enough!">9600</ComboBoxItem>
@@ -78,7 +81,7 @@
 		</ComboBox>
 
 
-		<views:ConnectionActionView  Grid.Row="4" Grid.Column="0" />
+		<views:ConnectionActionView DataContext="{Binding}" Grid.Row="4" Grid.Column="0" />
 		<TextBlock Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
 				   Text="{Binding IsConnecting}">
 			Connected
