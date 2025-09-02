@@ -20,12 +20,16 @@ using Microsoft.Extensions.Logging;
 
 namespace MBLite.ViewModels;
 
-public partial class MainViewModel : ViewModelBase
+public partial class MainViewModel : ViewModelBase, IDisposable
 {
     // Services
     private readonly IApplicationService _applicationService;
     private readonly IFileService _fileService;
     private readonly ILogger<MainViewModel> _logger;
+
+    private const int TotalExpectedRecords = 148;
+    private readonly IDisposable _progressSubscription;
+    private bool _disposed;
 
     /// <summary>
     /// Поле для дочернего ViewModel с автоматическим созданием свойства
@@ -35,8 +39,9 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private ConnectionViewModel _connection;
 
-
-    private readonly List<RecordRegister> _recordRegisters = new List<RecordRegister>();
+    [ObservableProperty]
+    private ObservableCollection<RecordRegister> _recordRegisters = new();
+    //private readonly List<RecordRegister> _recordRegisters = new List<RecordRegister>();
 
     [ObservableProperty]
     private int _currentRowAddress = 12345;
@@ -65,7 +70,7 @@ public partial class MainViewModel : ViewModelBase
         // Инициализация портов
 
         // Создаем экземпляр дочернего ViewModel
-        
+
         // Подписываемся на события дочернего ViewModel (опционально)
         Connection.PropertyChanged += (s, e) =>
         {
@@ -73,7 +78,7 @@ public partial class MainViewModel : ViewModelBase
             if (e.PropertyName == nameof(ConnectionViewModel.IsConnecting))
             {
                 // Логика при изменении состояния подключения
-                Status = "Подключено!";
+                Status = Connection.IsConnecting ? "Подключено!" : "Не подключено";
             }
         };
 
@@ -82,6 +87,7 @@ public partial class MainViewModel : ViewModelBase
 
         // Логируем инициализацию
         _logger.LogInformation("MainViewModel инициализирован");
+
     }
 
     // Commands
@@ -155,7 +161,7 @@ public partial class MainViewModel : ViewModelBase
                 {
                     _recordRegisters.Add(register);
                     await Task.Delay(5); // Simulate long-running operation
-                    percentComplete = (double)_recordRegisters.Count / 148 * 100;
+                    percentComplete = (double)_recordRegisters.Count / TotalExpectedRecords * 100;
                     progress?.Report(percentComplete);
                     CurrentRowAddress = register.Address;
                 }
@@ -200,4 +206,17 @@ public partial class MainViewModel : ViewModelBase
         return true;
     }
 
+    private void OnProgressChanged(object sender, double progress)
+    {
+        UploadProgress = (int)progress;
+    }
+
+    public void Dispose()
+    {
+        if (!_disposed)
+        {
+            _progressSubscription?.Dispose();
+            _disposed = true;
+        }
+    }
 }
