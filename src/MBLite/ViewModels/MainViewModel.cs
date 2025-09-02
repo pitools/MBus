@@ -7,7 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Logging;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CsvHelper;
@@ -28,7 +30,8 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private readonly ILogger<MainViewModel> _logger;
 
     private const int TotalExpectedRecords = 148;
-    private readonly IDisposable _progressSubscription;
+    private readonly EventHandler<double> _progressHandler;
+    private IDisposable _progressSubscription;
     private bool _disposed;
 
     /// <summary>
@@ -85,9 +88,11 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         // Инициализируем команды
         InitializeCommands();
 
+        _progressHandler = OnProgressChanged;
+        Progress.ProgressChanged += _progressHandler;
+
         // Логируем инициализацию
         _logger.LogInformation("MainViewModel инициализирован");
-
     }
 
     // Commands
@@ -121,24 +126,28 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     }
 
 
-    private async Task OpenFileActionAsync()
+    private async Task OpenFileActionAsync(CancellationToken cancellationToken = default)
     {
-        //var progress = new Progress<double>();
-        Progress.ProgressChanged += (sender, args) =>
+        try
         {
-            UploadProgress = (int)args;
-        };
-        if (_fileService is { })
-        {
-            await _fileService.OpenFileAsync(
-                OpenFileCallbackAsync,
-                new List<string>(new[] { "Csv", "Json", "All" }),
-                "Open",
-                Progress);
+            if (_fileService is { })
+            {
+                await _fileService.OpenFileAsync(
+                    OpenFileCallbackAsync,
+                    new List<string>(new[] { "Csv", "Json", "All" }),
+                    "Open",
+                    Progress,
+                    cancellationToken);
+            }
         }
+        catch (OperationCanceledException)
+        {
+            _logger.LogInformation("File operation was cancelled");
+        }
+
     }
 
-    private async Task OpenFileCallbackAsync(Stream stream, IProgress<double> progress)
+    private async Task OpenFileCallbackAsync1(Stream stream, IProgress<double> progress)
     {
         IAsyncEnumerable<RecordRegister> records;
         var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture)
@@ -175,6 +184,50 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         }
     }
 
+    private async Task OpenFileCallbackAsync(Stream stream, IProgress<double> progress, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var records = await ParseCsvFileAsync(stream, progress, cancellationToken);
+            RecordRegisters = new ObservableCollection<RecordRegister>(records);
+        }
+        catch (CsvHelperException ex)
+        {
+            _logger.LogError(ex, "Ошибка парсинга CSV");
+            // Уведомление пользователя
+        }
+        catch (OperationCanceledException)
+        {
+            _logger.LogInformation("CSV parsing cancelled");
+            throw; // Пробрасываем выше для обработки в команде
+        }
+    }
+
+    private async Task<List<RecordRegister>> ParseCsvFileAsync(Stream stream, IProgress<double> progress, CancellationToken cancellationToken = default)
+    {
+        var records = new List<RecordRegister>();
+        var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture) { Delimiter = ";" };
+
+        using var reader = new StreamReader(stream);
+        using var csv = new CsvReader(reader, csvConfig);
+
+        var asyncRecords = csv.GetRecordsAsync<RecordRegister>();
+        await foreach (var register in asyncRecords.WithCancellation(cancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            records.Add(register);
+            await Task.Delay(5, cancellationToken); // Simulate long-running operation
+            CurrentRowAddress = register.Address;
+
+            var percentComplete = (double)records.Count / TotalExpectedRecords * 100;
+            progress?.Report(percentComplete);
+        }
+
+        return records;
+    }
+
     private async Task SaveFileActionAsync()
     {
         if (_fileService is { } && Status is { })
@@ -206,16 +259,39 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         return true;
     }
 
-    private void OnProgressChanged(object sender, double progress)
+    //private void OnProgressChanged(object sender, double progress)
+    //{
+    //    // Автоматическая маршализация в UI поток
+    //    Dispatcher.UIThread.Post(() =>
+    //    {
+    //        UploadProgress = (int)progress;
+    //    });
+    //}
+
+    private async void OnProgressChanged(object sender, double progress)
     {
-        UploadProgress = (int)progress;
+        try
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                UploadProgress = (int)progress;
+            });
+        }
+        catch (TaskCanceledException)
+        {
+            // Обработка отмены
+            _logger.LogInformation("Progress update was cancelled");
+        }
     }
 
     public void Dispose()
     {
         if (!_disposed)
         {
-            _progressSubscription?.Dispose();
+            if (_progressHandler != null)
+            {
+                Progress.ProgressChanged -= _progressHandler;
+            }
             _disposed = true;
         }
     }

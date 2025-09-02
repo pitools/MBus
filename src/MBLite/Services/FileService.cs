@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -41,7 +42,7 @@ namespace MBLite.Services
             MimeTypes = new[] { "text/csv" }
         };
 
-        public async Task OpenFileAsync(Func<Stream, IProgress<double>, Task> callback, List<string> fileTypes, string title, IProgress<double> progress)
+        public async Task OpenFileAsync(Func<Stream, IProgress<double>, CancellationToken, Task> callback, List<string> fileTypes, string title, IProgress<double> progress, CancellationToken cancellationToken = default)
         {
             var storageProvider = GetStorageProvider();
             if (storageProvider is null)
@@ -66,7 +67,7 @@ namespace MBLite.Services
 #else
                     await using var stream = await file.OpenReadAsync();
 #endif
-                    await callback(stream, progress);
+                    await callback(stream, progress, cancellationToken);
                 }
                 catch (Exception e)
                 {
