@@ -11,6 +11,6 @@ namespace MBLite.Services
     public interface IFileService
     {
         Task OpenFileAsync(Func<Stream, IProgress<double>, CancellationToken, Task> callback, List<string> fileTypes, string title, IProgress<double> progress, CancellationToken cancellationToken = default);
-        Task SaveFileAsync(Func<Stream, Task> callback, List<string> fileTypes, string title, string fileName, string defaultExtension);
+        Task SaveFileAsync(Func<Stream, CancellationToken, Task> callback, List<string> fileTypes, string title, string fileName, string defaultExtension, CancellationToken cancellationToken = default);
     }
 }

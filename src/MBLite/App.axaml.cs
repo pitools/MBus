@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Logging;
 using Avalonia.Markup.Xaml;
+using MBLite.Repositories;
 using MBLite.Services;
 using MBLite.ViewModels;
 using MBLite.ViewModels.Connection;
@@ -75,6 +76,8 @@ public partial class App : Application
         // 2. Сервисы приложения (из AddCommonServices)
         services.AddScoped<IApplicationService, ApplicationService>();
         services.AddScoped<IFileService, FileService>();
+
+        services.AddSingleton<IRegisterRepository, CsvRegisterRepository>();
 
         // 3. Modbus сервисы
         //services.AddSingleton<IModbusService, ModbusService>();

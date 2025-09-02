@@ -14,7 +14,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CsvHelper;
 using CsvHelper.Configuration;
-using MBLite.Models.Csv;
+using MBLite.Models;
+using MBLite.Repositories;
 using MBLite.Services;
 using MBLite.ViewModels.Connection;
 using MBLite.Views;
@@ -28,10 +29,9 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private readonly IApplicationService _applicationService;
     private readonly IFileService _fileService;
     private readonly ILogger<MainViewModel> _logger;
+    private readonly IRegisterRepository _registerRepository;
 
-    private const int TotalExpectedRecords = 148;
     private readonly EventHandler<double> _progressHandler;
-    private IDisposable _progressSubscription;
     private bool _disposed;
 
     /// <summary>
@@ -43,7 +43,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private ConnectionViewModel _connection;
 
     [ObservableProperty]
-    private ObservableCollection<RecordRegister> _recordRegisters = new();
+    private ObservableCollection<CsvRecordRegister> _recordRegisters = new();
     //private readonly List<RecordRegister> _recordRegisters = new List<RecordRegister>();
 
     [ObservableProperty]
@@ -63,12 +63,14 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         IApplicationService applicationService,
         IFileService fileService,
         ILogger<MainViewModel> logger,
-        ConnectionViewModel connection)
+        ConnectionViewModel connection,
+        IRegisterRepository registerRepository)
     {
         _applicationService = applicationService;
         _fileService = fileService;
         _logger = logger;
         _connection = connection;
+        _registerRepository = registerRepository;
 
         // Инициализация портов
 
@@ -147,50 +149,13 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     }
 
-    private async Task OpenFileCallbackAsync1(Stream stream, IProgress<double> progress)
-    {
-        IAsyncEnumerable<RecordRegister> records;
-        var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture)
-        {
-            Delimiter = ";"
-        };
-
-        //using (var reader = new StreamReader("d:\\dev\\vs\\MBus\\materials\\test.csv"))
-        using (var reader = new StreamReader(stream))
-
-        using (var csv = new CsvReader(reader, csvConfig))
-        {
-            records = csv.GetRecordsAsync<RecordRegister>();
-
-            double percentComplete;
-
-            try
-            {
-                await foreach (var register in records)
-                {
-                    _recordRegisters.Add(register);
-                    await Task.Delay(5); // Simulate long-running operation
-                    percentComplete = (double)_recordRegisters.Count / TotalExpectedRecords * 100;
-                    progress?.Report(percentComplete);
-                    CurrentRowAddress = register.Address;
-                }
-                _logger.LogInformation("Парсинг CSV!");
-
-            }
-            catch (CsvHelperException ex)
-            {
-                _logger.LogError(ex, "Ошибка парсинга CSV");
-            }
-        }
-    }
-
     private async Task OpenFileCallbackAsync(Stream stream, IProgress<double> progress, CancellationToken cancellationToken = default)
     {
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var records = await ParseCsvFileAsync(stream, progress, cancellationToken);
-            RecordRegisters = new ObservableCollection<RecordRegister>(records);
+            var records = await _registerRepository.LoadFromCsvAsync(stream, progress, cancellationToken);
+            RecordRegisters = new ObservableCollection<CsvRecordRegister>(records);
         }
         catch (CsvHelperException ex)
         {
@@ -202,30 +167,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             _logger.LogInformation("CSV parsing cancelled");
             throw; // Пробрасываем выше для обработки в команде
         }
-    }
-
-    private async Task<List<RecordRegister>> ParseCsvFileAsync(Stream stream, IProgress<double> progress, CancellationToken cancellationToken = default)
-    {
-        var records = new List<RecordRegister>();
-        var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture) { Delimiter = ";" };
-
-        using var reader = new StreamReader(stream);
-        using var csv = new CsvReader(reader, csvConfig);
-
-        var asyncRecords = csv.GetRecordsAsync<RecordRegister>();
-        await foreach (var register in asyncRecords.WithCancellation(cancellationToken))
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            records.Add(register);
-            await Task.Delay(5, cancellationToken); // Simulate long-running operation
-            CurrentRowAddress = register.Address;
-
-            var percentComplete = (double)records.Count / TotalExpectedRecords * 100;
-            progress?.Report(percentComplete);
-        }
-
-        return records;
     }
 
     private async Task SaveFileActionAsync()
@@ -241,32 +182,18 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         }
     }
 
-    private async Task SaveFileCallbackAsync(Stream stream)
+    private async Task SaveFileCallbackAsync(Stream stream, CancellationToken cancellationToken = default)
     {
-        if (_recordRegisters is null)
-        {
+        if (_recordRegisters == null || !_recordRegisters.Any())
             return;
-        }
-        using (var writer = new StreamWriter(stream))
 
-        using (var csv = new CsvWriter(writer, CultureInfo.CurrentCulture))
-        {
-            await csv.WriteRecordsAsync(_recordRegisters);
-        }
+        await _registerRepository.SaveToCsvAsync(_recordRegisters, stream, cancellationToken);
     }
+
     private bool SaveFileCanExecute()
     {
         return true;
     }
-
-    //private void OnProgressChanged(object sender, double progress)
-    //{
-    //    // Автоматическая маршализация в UI поток
-    //    Dispatcher.UIThread.Post(() =>
-    //    {
-    //        UploadProgress = (int)progress;
-    //    });
-    //}
 
     private async void OnProgressChanged(object sender, double progress)
     {

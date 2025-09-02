@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MBLite.Models.Csv
+namespace MBLite.Models
 {
-    public class RecordRegister
+    public class CsvRecordRegister
     {
         public int Address { get; set; }
 

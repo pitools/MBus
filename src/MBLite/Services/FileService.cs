@@ -76,7 +76,7 @@ namespace MBLite.Services
             }
         }
 
-        public async Task SaveFileAsync(Func<Stream, Task> callback, List<string> fileTypes, string title, string fileName, string defaultExtension)
+        public async Task SaveFileAsync(Func<Stream, CancellationToken, Task> callback, List<string> fileTypes, string title, string fileName, string defaultExtension, CancellationToken cancellationToken = default)
         {
             var storageProvider = GetStorageProvider();
             if (storageProvider is null)
@@ -102,7 +102,7 @@ namespace MBLite.Services
 #else
                     await using var stream = await file.OpenWriteAsync();
 #endif
-                    await callback(stream);
+                    await callback(stream, cancellationToken);
                 }
                 catch (Exception e)
                 {
