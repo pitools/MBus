@@ -7,41 +7,35 @@
 			 xmlns:views="clr-namespace:MBLite.Views"
 			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System.ObjectModel"
-             mc:Ignorable="d" d:DesignWidth="256" d:DesignHeight="256"
+			 mc:Ignorable="d" d:DesignWidth="256" d:DesignHeight="256"
 			 x:Class="MBLite.Views.ConnectionView"
 			 x:CompileBindings="True" x:DataType="vmc:ConnectionViewModel">
-	<!--<design.datacontext>
-		 --><!--this only sets the datacontext for the previewer in an ide,
-         to set the actual datacontext for runtime, set the datacontext
-		 property in code (look at app.axaml.cs)--><!-- 
-		<vmc:connectionviewmodel />
-	</design.datacontext>-->
 	<Design.DataContext>
-		 <!--this only sets the datacontext for the previewer in an ide,
+		<!--this only sets the datacontext for the previewer in an ide,
          to set the actual datacontext for runtime, set the datacontext
-		 property in code (look at app.axaml.cs)--> 
+		 property in code (look at app.axaml.cs)-->
 		<vmc:ConnectionViewModel>
-					<vmc:ConnectionViewModel.UnitId>
-						123
-					</vmc:ConnectionViewModel.UnitId>
-					<vmc:ConnectionViewModel.ComPorts>
-						<objectModel:ObservableCollection x:TypeArguments="sys:String">
-							<sys:String>COM1</sys:String>
-							<sys:String>COM2</sys:String>
-							<sys:String>COM3</sys:String>
-							<sys:String>COM4</sys:String>
-						</objectModel:ObservableCollection>
-					</vmc:ConnectionViewModel.ComPorts>
-					<vmc:ConnectionViewModel.SelectedPort>COM1</vmc:ConnectionViewModel.SelectedPort>
-				</vmc:ConnectionViewModel>
+			<vmc:ConnectionViewModel.UnitId>
+				123
+			</vmc:ConnectionViewModel.UnitId>
+			<vmc:ConnectionViewModel.ComPorts>
+				<objectModel:ObservableCollection x:TypeArguments="sys:String">
+					<sys:String>COM1</sys:String>
+					<sys:String>COM2</sys:String>
+				</objectModel:ObservableCollection>
+			</vmc:ConnectionViewModel.ComPorts>
+			<vmc:ConnectionViewModel.SelectedPort>
+				COM2
+			</vmc:ConnectionViewModel.SelectedPort>
+		</vmc:ConnectionViewModel>
 	</Design.DataContext>
-
 	<Grid ShowGridLines="False">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition MinWidth="64"></ColumnDefinition>
 			<ColumnDefinition MinWidth="96"></ColumnDefinition>
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="Auto"></RowDefinition>
@@ -60,7 +54,7 @@
 		</Label>
 		<ComboBox x:Name="ComPortsComboBox" Grid.Row="1" Grid.Column="1"
 				  ItemsSource="{Binding ComPorts}"
-				  SelectedIndex="1" MaxDropDownHeight="256" SelectedItem="{Binding SelectedPort}"
+				  MaxDropDownHeight="256" SelectedItem="{Binding SelectedPort}"
 				  VerticalAlignment="Center" HorizontalAlignment="Stretch">
 		</ComboBox>
 		<Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Id</Label>
@@ -68,7 +62,7 @@
 				 Text="{Binding UnitId}" />
 
 		<Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Baudrate</Label>
-		<ComboBox Grid.Row="3" Grid.Column="1" SelectedIndex="2" MaxDropDownHeight="128" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+		<ComboBox x:Name="BaudrateComboBox" Grid.Row="3" Grid.Column="1" SelectedIndex="0" MaxDropDownHeight="128" VerticalAlignment="Center" HorizontalAlignment="Stretch">
 			<ComboBoxItem ToolTip.Tip="boy, this is really fast...">1200</ComboBoxItem>
 			<ComboBoxItem ToolTip.Tip="the speed modem that every machine came with after 9600 was available...">2400</ComboBoxItem>
 			<ComboBoxItem ToolTip.Tip="at last, fast enough!">9600</ComboBoxItem>
@@ -88,10 +82,3 @@
 		</TextBlock>
 	</Grid>
 </UserControl>
-<!--xmlns:vmc="clr-namespace:MBLite.ViewModels.Connection"-->
-<!--xmlns:views="clr-namespace:MBLite.Views"-->
-<!--xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System.ObjectModel"-->
-
-<!--x:CompileBindings="True"
-x:DataType="vmc:ConnectionViewModel"-->

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,8 +22,6 @@ namespace MBLite.ViewModels.Connection
         private readonly ILogger<ConnectionViewModel> _logger;
 
         [ObservableProperty]
-        private ObservableCollection<string> _comPorts = new();
-        [ObservableProperty]
         private string _selectedPort = string.Empty;
         [ObservableProperty]
         private bool _isConnecting = false;
@@ -30,12 +29,20 @@ namespace MBLite.ViewModels.Connection
         private string _port = "COM1";
         [ObservableProperty]
         private string _baudrate = "19200";
+
+        // Коллекция доступных скоростей
+        public ObservableCollection<BaudrateItem> AvailableBaudrates { get; } = new();
+
+        // Коллекция доступных последовательных портов
+        [ObservableProperty]
+        private ObservableCollection<string> _comPorts = new();
+
         [ObservableProperty]
         private int _unitId = 12;
 
         public ConnectionViewModel()
         {
-
+            IsConnecting = true;
         }
 
         public ConnectionViewModel(
@@ -44,6 +51,7 @@ namespace MBLite.ViewModels.Connection
         {
             _applicationService = applicationService;
             _logger = logger;
+
             ComPorts = new ObservableCollection<string>(_applicationService.GetComPorts());
 
             if (ComPorts.Any<string>())
