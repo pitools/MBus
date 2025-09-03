@@ -142,31 +142,30 @@ public partial class MainViewModel : ViewModelBase, IDisposable
                     cancellationToken);
             }
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException ex)
         {
-            _logger.LogInformation("File operation was cancelled");
+            _logger.LogInformation(ex, "File operation was cancelled");
+        }
+        catch (CsvHelperException ex) // Ловим здесь исключение из колбэка
+        {
+            _logger.LogError(ex, "Ошибка при работе с файлом");
+            // Уведомление пользователя
+            // Например: ShowErrorDialog("Неверный формат файла");
+        }
+        catch (Exception ex) // Общий обработчик на всякий случай
+        {
+            _logger.LogError(ex, "Неизвестная ошибка при открытии файла");
+            // Уведомление пользователя
+            //throw; // Или не пробрасывать, если хотим обработать здесь
         }
 
     }
 
     private async Task OpenFileCallbackAsync(Stream stream, IProgress<double> progress, CancellationToken cancellationToken = default)
     {
-        try
-        {
             cancellationToken.ThrowIfCancellationRequested();
             var records = await _registerRepository.LoadFromCsvAsync(stream, progress, cancellationToken);
             RecordRegisters = new ObservableCollection<CsvRecordRegister>(records);
-        }
-        catch (CsvHelperException ex)
-        {
-            _logger.LogError(ex, "Ошибка парсинга CSV");
-            // Уведомление пользователя
-        }
-        catch (OperationCanceledException)
-        {
-            _logger.LogInformation("CSV parsing cancelled");
-            throw; // Пробрасываем выше для обработки в команде
-        }
     }
 
     private async Task SaveFileActionAsync()
@@ -184,10 +183,10 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     private async Task SaveFileCallbackAsync(Stream stream, CancellationToken cancellationToken = default)
     {
-        if (_recordRegisters == null || !_recordRegisters.Any())
+        if (RecordRegisters == null || !RecordRegisters.Any())
             return;
 
-        await _registerRepository.SaveToCsvAsync(_recordRegisters, stream, cancellationToken);
+        await _registerRepository.SaveToCsvAsync(RecordRegisters, stream, cancellationToken);
     }
 
     private bool SaveFileCanExecute()
