@@ -66,6 +66,7 @@ namespace MBLite.Repositories
 
         private async Task<int> CountTotalRecordsAsync(Stream stream, CancellationToken cancellationToken)
         {
+            var originalPosition = stream.Position;
             var totalRecords = 0;
 
             using var reader = new StreamReader(stream, leaveOpen: true);
@@ -78,6 +79,9 @@ namespace MBLite.Repositories
                 cancellationToken.ThrowIfCancellationRequested();
                 totalRecords++;
             }
+
+            // Возвращаем поток в исходное положение
+            stream.Position = originalPosition;
             return totalRecords;
         }
     }

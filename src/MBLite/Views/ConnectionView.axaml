@@ -10,20 +10,20 @@
              mc:Ignorable="d" d:DesignWidth="256" d:DesignHeight="256"
 			 x:Class="MBLite.Views.ConnectionView"
 			 x:CompileBindings="True" x:DataType="vmc:ConnectionViewModel">
-	<!--<Design.DataContext>
-		--><!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext
-		 property in code (look at App.axaml.cs) --><!--
-		<vmc:ConnectionViewModel />
-	</Design.DataContext>-->
+	<!--<design.datacontext>
+		 --><!--this only sets the datacontext for the previewer in an ide,
+         to set the actual datacontext for runtime, set the datacontext
+		 property in code (look at app.axaml.cs)--><!-- 
+		<vmc:connectionviewmodel />
+	</design.datacontext>-->
 	<Design.DataContext>
-		<!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext
-		 property in code (look at App.axaml.cs) -->
+		 <!--this only sets the datacontext for the previewer in an ide,
+         to set the actual datacontext for runtime, set the datacontext
+		 property in code (look at app.axaml.cs)--> 
 		<vmc:ConnectionViewModel>
-					<!--<vmc:ConnectionViewModel.UnitId>
+					<vmc:ConnectionViewModel.UnitId>
 						123
-					</vmc:ConnectionViewModel.UnitId>-->
+					</vmc:ConnectionViewModel.UnitId>
 					<vmc:ConnectionViewModel.ComPorts>
 						<objectModel:ObservableCollection x:TypeArguments="sys:String">
 							<sys:String>COM1</sys:String>

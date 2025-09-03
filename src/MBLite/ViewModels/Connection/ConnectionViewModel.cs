@@ -6,11 +6,12 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Logging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MBLite.Models;
 using MBLite.Services;
 using Microsoft.Extensions.Logging;
-using MBLite.Models;
 
 namespace MBLite.ViewModels.Connection
 {
@@ -34,6 +35,7 @@ namespace MBLite.ViewModels.Connection
 
         public ConnectionViewModel()
         {
+
         }
 
         public ConnectionViewModel(
