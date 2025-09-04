@@ -40,7 +40,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     /// с уведомлениями об изменении
     /// </summary>
     [ObservableProperty]
-    private ConnectionViewModel _connection;
+    private ConnectionViewModel _connectionView;
 
     [ObservableProperty]
     private ObservableCollection<CsvRecordRegister> _recordRegisters = new();
@@ -63,13 +63,13 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         IApplicationService applicationService,
         IFileService fileService,
         ILogger<MainViewModel> logger,
-        ConnectionViewModel connection,
+        ConnectionViewModel connectionView,
         IRegisterRepository registerRepository)
     {
         _applicationService = applicationService;
         _fileService = fileService;
         _logger = logger;
-        _connection = connection;
+        _connectionView = connectionView;
         _registerRepository = registerRepository;
 
         // Инициализация портов
@@ -77,13 +77,13 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         // Создаем экземпляр дочернего ViewModel
 
         // Подписываемся на события дочернего ViewModel (опционально)
-        Connection.PropertyChanged += (s, e) =>
+        ConnectionView.PropertyChanged += (s, e) =>
         {
             // Можно реагировать на изменения в дочернем ViewModel
-            if (e.PropertyName == nameof(ConnectionViewModel.IsConnecting))
+            if (e.PropertyName == nameof(ConnectionViewModel.IsConnected))
             {
                 // Логика при изменении состояния подключения
-                Status = Connection.IsConnecting ? "Подключено!" : "Не подключено";
+                Status = ConnectionView.IsConnected ? "Подключено!" : "Не подключено";
             }
         };
 
@@ -119,7 +119,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     private bool DownloadToCanExecute()
     {
-        //return Connection.IsConnecting;
+        //return ConnectionView.IsConnecting;
         return true;
     }
     private void UploadFrom()

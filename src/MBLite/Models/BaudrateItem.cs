@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MBLite.Models
+﻿namespace MBLite.Models
 {
     public class BaudrateItem
     {
