@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Logging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MBLite.Models;
@@ -21,20 +15,25 @@ namespace MBLite.ViewModels.Connection
         private readonly IApplicationService _applicationService;
         private readonly ILogger<ConnectionViewModel> _logger;
 
-        [ObservableProperty]
-        private string _selectedPort = string.Empty;
-
+        // Статус соединения
         [ObservableProperty]
         private bool _isConnected;
 
         [ObservableProperty]
         private string _connectionStatus = "Disconnected";
 
+        // Параметры соединения
         [ObservableProperty]
         private string _port = "COM1";
 
         [ObservableProperty]
+        private int _unitId = 12;
+
+        [ObservableProperty]
         private BaudrateItem? _selectedBaudrate;
+
+        [ObservableProperty]
+        private string _selectedPort = string.Empty;
 
         // Коллекция доступных скоростей
         [ObservableProperty]
@@ -43,13 +42,6 @@ namespace MBLite.ViewModels.Connection
         // Коллекция доступных последовательных портов
         [ObservableProperty]
         private ObservableCollection<string> _comPorts = new();
-
-        [ObservableProperty]
-        private int _unitId = 12;
-
-        // Вычисляемое свойство
-        public string SelectedBaudrateInfo =>
-            SelectedBaudrate != null ? $"{SelectedBaudrate.Value} baud ({SelectedBaudrate.Description})" : "Not selected";
 
         public ConnectionViewModel()
         {
@@ -63,54 +55,19 @@ namespace MBLite.ViewModels.Connection
             _applicationService = applicationService;
             _logger = logger;
 
-            ComPorts = new ObservableCollection<string>(_applicationService.GetComPorts());
-
-            if (ComPorts.Any<string>())
-            {
-                SelectedPort = ComPorts[0];
-            }
-
-            Port = SelectedPort;
-
-            _logger = logger;
-
-            InitializeCommands();
             InitializeBaudrates();
+            InitializeComPorts();
             // Установка значения по умолчанию
             SelectedBaudrate = AvailableBaudrates.FirstOrDefault(b => b.Value == 9600);
 
             // Логируем инициализацию
             _logger.LogInformation("ConnectionViewModel инициализирован");
-
         }
 
-        // Commands
-        // Команда для обработки выбора скорости
-        [RelayCommand]
-        private void BaudrateSelected(BaudrateItem? selectedItem)
-        {
-            if (selectedItem != null)
-            {
-                Console.WriteLine($"Selected baudrate: {selectedItem.Value} - {selectedItem.Description}");
-                // Дополнительная логика при выборе
-            }
-        }
-        // Команда для подключения
-        [RelayCommand]
-        private void Connect()
-        {
-            if (SelectedBaudrate != null)
-            {
-                Console.WriteLine($"Connecting with {SelectedBaudrate.Value} baud");
-                // Логика подключения
-            }
-        }
+        // Вычисляемое свойство
+        public string SelectedBaudrateInfo =>
+            SelectedBaudrate != null ? $"{SelectedBaudrate.Value} baud ({SelectedBaudrate.Description})" : "Not selected";
 
-        public IAsyncRelayCommand TestConnectionCommand { get; private set; } = null!;
-        private void InitializeCommands()
-        {
-            TestConnectionCommand = new AsyncRelayCommand(TestConnectionActionAsync);
-        }
         private void InitializeBaudrates()
         {
             AvailableBaudrates.Add(new BaudrateItem(1200, "boy, this is really fast..."));
@@ -124,10 +81,56 @@ namespace MBLite.ViewModels.Connection
             AvailableBaudrates.Add(new BaudrateItem(115200, "rocket"));
         }
 
-        private async Task TestConnectionActionAsync()
+        private void InitializeComPorts()
+        {
+            ComPorts = new ObservableCollection<string>(_applicationService.GetComPorts());
+
+            if (ComPorts.Any<string>())
+            {
+                SelectedPort = ComPorts[0];
+            }
+
+            Port = SelectedPort;
+        }
+
+        [RelayCommand]
+        private void TestConnection()
         {
             IsConnected = !IsConnected;
             UnitId++;
+        }
+
+        // Commands
+        // Команда для обработки выбора скорости
+        [RelayCommand]
+        private void BaudrateSelected(BaudrateItem? selectedItem)
+        {
+            if (selectedItem != null)
+            {
+                Console.WriteLine($"Selected baudrate: {selectedItem.Value} - {selectedItem.Description}");
+                // Дополнительная логика при выборе
+            }
+        }
+
+        // Команда для подключения
+        [RelayCommand]
+        private void Connect()
+        {
+            if (SelectedBaudrate != null)
+            {
+                Console.WriteLine($"Connecting with {SelectedBaudrate.Value} baud");
+                // Логика подключения
+            }
+        }
+        // Команда для подключения
+        [RelayCommand]
+        private void Disconnect()
+        {
+            if (SelectedBaudrate != null)
+            {
+                Console.WriteLine($"Disconnecting with {SelectedBaudrate.Value} baud");
+                // Логика подключения
+            }
         }
     }
 }

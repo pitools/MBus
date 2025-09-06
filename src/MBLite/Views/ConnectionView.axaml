@@ -61,7 +61,7 @@
 		<TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Watermark="Id"
 				 Text="{Binding UnitId}" />
 
-		<Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Baudrate</Label>
+		<!--<Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Baudrate</Label>
 		<ComboBox x:Name="BaudrateComboBox" Grid.Row="3" Grid.Column="1" SelectedIndex="0" MaxDropDownHeight="128" VerticalAlignment="Center" HorizontalAlignment="Stretch">
 			<ComboBoxItem ToolTip.Tip="boy, this is really fast...">1200</ComboBoxItem>
 			<ComboBoxItem ToolTip.Tip="the speed modem that every machine came with after 9600 was available...">2400</ComboBoxItem>
@@ -72,13 +72,26 @@
 			<ComboBoxItem ToolTip.Tip="4 x 9 600, popular RS-232 and modem speed">38400</ComboBoxItem>
 			<ComboBoxItem ToolTip.Tip="popular RS-232 speed">57600</ComboBoxItem>
 			<ComboBoxItem ToolTip.Tip="rocket">115200</ComboBoxItem>
+		</ComboBox>-->
+		<Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Baudrate</Label>
+		<ComboBox x:Name="BaudrateComboBox" Grid.Row="3" Grid.Column="1"
+				  SelectedIndex="0"
+				  ItemsSource="{Binding AvailableBaudrates}"
+				  SelectedItem="{Binding SelectedBaudrate}"
+				  MaxDropDownHeight="128" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+			<ComboBox.ItemTemplate>
+				<DataTemplate>
+					<ComboBoxItem Margin="0" Content="{Binding Value}" ToolTip.Tip="{Binding Description}"></ComboBoxItem>
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
 		</ComboBox>
 
 
-		<views:ConnectionActionView Grid.Row="4" Grid.Column="0" />
-		<TextBlock Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+		<views:ConnectionActionView Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" />
+		<TextBlock Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
 				   Text="{Binding IsConnected}">
 			Connected
 		</TextBlock>
+
 	</Grid>
 </UserControl>

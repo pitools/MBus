@@ -21,5 +21,13 @@
 			Command="{Binding TestConnectionCommand}"
 			Content="Test"
 			MinWidth="32" />
+		<Button VerticalAlignment="Center"
+			Command="{Binding ConnectCommand}"
+			Content="Connect"
+			MinWidth="32" />
+		<Button VerticalAlignment="Center"
+			Command="{Binding DisconnectCommand}"
+			Content="Disconnect"
+			MinWidth="32" />
 	</StackPanel>
 </UserControl>
